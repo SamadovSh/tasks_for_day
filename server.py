@@ -2,6 +2,7 @@ from bottle import route, run, view, static_file, redirect, request
 from db import TodoItem
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import os
 
 engine = create_engine('sqlite:///tasks.db')
 Session = sessionmaker(bind=engine)
@@ -45,4 +46,7 @@ def api_complete(uid):
     return 'OK'
 
 
-run(host='localhost', port=8080)
+if os.environ.get('APP_LOCATION') == 'heroku':
+    run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+else:
+    run(host='localhost', port='8080')
